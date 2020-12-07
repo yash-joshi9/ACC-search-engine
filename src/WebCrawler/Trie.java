@@ -33,7 +33,11 @@ public class Trie<t> {
 		this.size += 1;
 	}
 	
+<<<<<<< HEAD
 	// When a word is searched and if the characters of the word are present it returns the url which has the word else returns null 
+=======
+	// when a word is searched and if the characters of the word are present it returns the url which has the word else returns null 
+>>>>>>> branch 'main' of https://github.com/yash-joshi9/ACC-search-engine.git
 	 
 	public t search_word(String s) {
 		HashMap<Character, Node<t>> children = this.root.children;
