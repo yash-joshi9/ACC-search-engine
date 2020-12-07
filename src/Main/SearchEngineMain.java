@@ -33,10 +33,7 @@ public class SearchEngineMain {
 			if(!search_word.equals(null)) {
 				String [] index = new String[1];
 				index[0] = search_word;
-				System.out.println(index[0]);
 				String[] webpages = SE.search(index);
-				
-				System.out.println(webpages);
 				
 				try {
 					if (webpages == null) {
@@ -48,13 +45,20 @@ public class SearchEngineMain {
 						
 						//Stores all the links in HashMap
 						for (String url : webpages) {
+							
 							unsortedLinks.put(url, PageRank.WordFrequency(url, search_word));
 						}
 						//to sort the links according to occurence of the word
 						LinkedHashMap<String, Integer> reverseSortedMap = new LinkedHashMap<>();
+						
 				        unsortedLinks.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
 				                .forEachOrdered(x -> reverseSortedMap.put(x.getKey(), x.getValue()));
-				         System.out.println("Priority \t Your Search Result");
+				        
+				        
+				         System.out.println("---------------------------------");
+				         System.out.println("Page Rank | \t | Your Search Result");
+				         System.out.println("---------------------------------");
+				         
 				        for (Map.Entry<String, Integer> entry : reverseSortedMap.entrySet()) {
 				            System.out.println(entry.getValue()+"\t \t"+entry.getKey());
 				        }
@@ -64,6 +68,8 @@ public class SearchEngineMain {
 				        
 				        if(op.equals("n")) {
 				        	flag = false;
+				        	System.out.println("Bye");
+				        	System.exit(1);
 				        }
 					}
 				

@@ -22,7 +22,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 public class PageRank {
-
+	private static String wordRegex = "[[ ]*|[,]*|[)]*|[(]*|[\"]*|[;]*|[-]*|[:]*|[']*|[’]*|[\\.]*|[:]*|[/]*|[!]*|[?]*|[+]*]+";
+	
 	public static int  WordFrequency(String URL, String WORD) throws IOException{
 		
 		//Creates a map element to store the rank of a page corresponding to 'WORD'
@@ -39,7 +40,7 @@ public class PageRank {
 		String line;
 		while ((line = br.readLine()) != null) {
 			
-			String words [] = line.split("\\w+");
+			String words [] = line.split(wordRegex);
 			
 			for (String word : words) {
 				
