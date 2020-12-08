@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import WebCrawler.Trie;
 import WebCrawler.WebCrawlerMain;
@@ -18,6 +19,7 @@ public class SearchEngine {
 	private static String [] webPages;
 	private static HashSet<String> allLinks;
 	private static String [] webPagesArray;
+	private static LinkedList<String> suggestions = new LinkedList<>(); 
 	
 	public HashSet<String> createTrie(String urlName) throws IOException {
 		HashSetMain hash =  new HashSetMain();
@@ -55,6 +57,12 @@ public class SearchEngine {
 			txt = txt.toLowerCase();
 			splitWords = txt.split(wordRegex);
 			
+			for(String s: splitWords) {
+				suggestions.add(s);
+			}
+			
+			suggestions.removeAll(uselessWords);
+			
 			temp = new HashSet<String>(Arrays.asList(splitWords));
 			temp.remove(uselessWords);
 			
@@ -75,7 +83,7 @@ public class SearchEngine {
 			i++;
 		}
 		
-		System.out.println(trie.size);
+		//System.out.println(trie.size);
 		return allLinks;
 	
 	}
@@ -100,6 +108,8 @@ public class SearchEngine {
 			} else {
 				System.out.println("The word <" + index[i] + "> is not in any file!" );
 				
+				suggestWords(index[i]);
+				
 				return null;
 			}
 		}
@@ -114,6 +124,23 @@ public class SearchEngine {
 		return webPages.toArray(new String[0]);
 	}
 	
+	public static void suggestWords(String str) {
+				
+		int dist = 10000;
+		String suggest = "No Suggestions!";
+		
+		for(String temp: suggestions) {
+			int d = EditDistance.editDistance(str, temp);
+			if(d < dist) {
+				suggest = temp;
+				dist = d;
+			}
+		}
+		
+		System.out.println("Did you mean " + suggest + "?");
+		
+	}
+	
 	
 	public static void main(String args[]) throws IOException {
 		SearchEngine sc = new SearchEngine();
@@ -122,107 +149,3 @@ public class SearchEngine {
 		sc.search(str);
 	}
 }
-
-//import WebCrawler.Trie;
-//import WebCrawler.WebCrawlerMain;
-
-//public class SearchEngine {
-//	
-//	
-//	private Trie<ArrayList<Integer>> trie;
-//	private final String splitstringsregex = "[[ ]*|[,]*|[)]*|[(]*|[\"]*|[;]*|[-]*|[:]*|[']*|[’]*|[\\.]*|[:]*|[/]*|[!]*|[?]*|[+]*]+";
-//	private String [] webPages;
-//	
-//	
-//	
-//	public SearchEngine(String urlName) throws IOException {
-//		HashSetMain hash =  new HashSetMain();
-//		WebCrawlerMain wc = new WebCrawlerMain();
-//		
-//		this.trie = new Trie<ArrayList<Integer>>();
-//		
-//		HashSet<String> uselessWords = hash.savepages("stopwords.txt");
-//		
-//		HashSet<String> allLinks = wc.getPageLinks(urlName, 1);
-//		
-//		
-//		
-//		HashSet<String> temp = null;
-//		String txt;
-//		String word;
-//		String[] splitWords;
-//		
-//		Iterator<String> linkIterator = null;
-//		Iterator<String> wordIterator = null;
-//		
-//		linkIterator = allLinks.iterator();
-//		
-//		
-//		int i = 0;
-//		while(linkIterator.hasNext()) {
-//			String str = linkIterator.next();
-//			txt = WebCrawlerMain.htmlToText(str).toLowerCase();
-//			splitWords = txt.split(splitstringsregex);
-//			
-//			temp = new HashSet<String>(Arrays.asList(splitWords));
-//			temp.remove(uselessWords);
-//			
-//			
-//			
-//			wordIterator = temp.iterator();
-//			
-//			while(wordIterator.hasNext()) {
-//				word = (String) wordIterator.next();
-//				ArrayList<Integer> ar = this.trie.search_word(word);
-//				
-//				
-//				if (ar == null) {
-//					this.trie.insert(word, new ArrayList<Integer>(Arrays.asList(i)));
-//				} else {
-//					ar.add(i);
-//				}
-//			}
-//
-//			i++;
-//		}
-//		
-//		
-//		for (int index = 0; index < allLinks.size() ; ++index) {
-////			try {
-////				txt = WebCrawlerMain.htmlToText(this.webPages[index]);
-////				txt = txt.toLowerCase();
-////				words = txt.split(splitstringsregex);
-////				
-////				
-////				
-////				temp = new HashSet<String>(Arrays.asList(words));
-////
-////				
-////				temp.removeAll(uselessWords); 
-////				
-////				iterator = temp.iterator();
-////				while(iterator.hasNext()) {
-////					word = (String) iterator.next();
-////					
-////					
-////					ArrayList<Integer> ar = this.trie.search_word(word);
-////					if (ar == null) {
-////					
-////						this.trie.insert(word, new ArrayList<Integer>(Arrays.asList(index)));
-////					
-////					} else {
-////						ar.add(index);
-////					}
-////				}
-////			} catch (Exception e) {
-////				e.printStackTrace();
-////			}
-//		} 
-//		 
-//	}
-	
-	
-//	public static void main(String args[]) throws IOException {
-//		SearchEngine sc = new SearchEngine("https://www.dream11.com/");
-//	}
-//}
